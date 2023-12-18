@@ -1,4 +1,5 @@
-import {Grid, MenuItem, Typography, TextField as TextFieldmui} from "@mui/material";
+'use client'
+import {Grid, MenuItem, Typography, TextField as TextFieldmui, Button} from "@mui/material";
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import MuiAccordion from '@mui/material/Accordion';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
@@ -6,6 +7,9 @@ import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import { Formik, Form, Field } from 'formik';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {Autocomplete, TextField} from "formik-mui";
+import * as Yup from 'yup';
+import useGeneralStore from "../../store/generalstore";
+import { useRouter } from 'next/navigation'
 
 const Accordion = ((props) => (
     <MuiAccordion disableGutters elevation={0} square {...props}
@@ -84,15 +88,34 @@ const otherIssueOption = [
     {"key":7,"text":"Huyết áp cao, nhịp tim bất thường"},
     {"key":8,"text":"Trẻ chậm lớn, run rẩy, co giật tay chân"}];
 
-
+const FormSchema = Yup.object().shape({
+    checkDate: Yup.date().required('Required'),
+    birthDate: Yup.date().required('Required'),
+    gender: Yup.number().required('Required'),
+    weight: Yup.number().required('Required'),
+    height: Yup.number().required('Required'),
+});
 export default function InputForm() {
-    return <Formik initialValues={{}}
+    const setInput = useGeneralStore((state) => state.setInput);
+    const router = useRouter();
+    return <Formik initialValues={{
+        checkDate: '2023-10-17',//new Date(),
+        birthDate: '2021-01-05',
+        gender: 1,
+        weight: 12,
+        height: 80,
+    }}
+                   validationSchema={FormSchema}
                    onSubmit={(values, { setSubmitting }) => {
+                       setInput(values);
+                       setSubmitting(false);
+                       router.push('/result');
                        // setTimeout(() => {
                        //     setSubmitting(false);
                        //     alert(JSON.stringify(values, null, 2));
                        // }, 500);
-                   }}>
+                   }}
+    >
             {({ submitForm, isSubmitting }) => (
                 <div>
                     <Form>
@@ -151,7 +174,7 @@ export default function InputForm() {
                             </AccordionSummary>
                             <AccordionDetails>
                                 <Grid container spacing={1}>
-                                    <Grid item xs={12}>
+                                    <Grid item md={6} xs={12}>
                                         <Field
                                             component={TextField}
                                             name="weight"
@@ -337,6 +360,7 @@ export default function InputForm() {
                                 </Grid>
                             </AccordionDetails>
                         </Accordion>
+                        <Button type="submit">Gửi thông tin</Button>
                     </Form>
                 </div>
         )}
