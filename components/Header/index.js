@@ -1,6 +1,7 @@
 import {Button, Paper, Stack, Box} from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
+import logoPic from '../../public/logo_long.svg'
 
 export default function Header () {
     return <Paper elevation={3} sx={{p:2,mt:2,mb:4}}>
@@ -8,7 +9,7 @@ export default function Header () {
             <Link href={"/"}>
                 <Button>
                     <Image
-                        src={"/logo_long.svg"}
+                        src={logoPic}
                         width={100}
                         height={50}
                     />
